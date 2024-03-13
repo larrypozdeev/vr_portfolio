@@ -60,7 +60,7 @@ function App() {
                     <drei.Stars radius={500} depth={100} count={1000} factor={5} />
                     <fog attach="fog" args={['#202025', 0, 80]} />
                     <Frame position={[10, 0, 0.5]} />
-                    <FrameVideo url="/10.mp4" position={[-3, 0, 1]} rotation={[0, 0.9, 0]} />
+                    <FrameVideo url="/10.mp4" position={[-3, 2, 1]} rotation={[0, 0.9, 0]} />
                     <drei.Text3D
                         position={[-2, 1, -1.5]}
                         font="/Inter_Bold.json"

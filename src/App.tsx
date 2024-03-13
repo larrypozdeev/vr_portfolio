@@ -3,6 +3,7 @@ import { Canvas } from '@react-three/fiber'
 import * as drei from '@react-three/drei';
 import SmoothLocomotion from './SmoothLocomotion';
 import SnapRotation from './SnapRotation';
+import { Suspense } from 'react';
 
 const GOLDENRATIO = 1.61803398875;
 
@@ -21,8 +22,8 @@ function Frame({ ...props }) {
                 <boxGeometry />
                 <meshBasicMaterial toneMapped={false} fog={false} />
             </mesh>
-            <mesh castShadow position={[0,-1.3,0 ]}> {/* leg stand */}
-                <boxGeometry args={[0.05, 4, 1.5]} />
+            <mesh castShadow position={[0, -1.3, 0]}> {/* leg stand */}
+                <boxGeometry args={[0.05, 4, 0.5]} />
                 <meshStandardMaterial color="#4b3ead" metalness={0.5} roughness={0.5} envMapIntensity={2} />
             </mesh>
         </mesh>
@@ -77,13 +78,21 @@ function App() {
 
                 <Canvas shadows>
                     <drei.Stars radius={500} depth={100} count={1000} factor={5} />
-                    <directionalLight position={[0, 10, 10]} intensity={0.5} castShadow shadow-mapSize={1024}/>
+                    <directionalLight position={[0, 10, 10]} intensity={0.5} castShadow shadow-mapSize={1024} />
                     <fog attach="fog" args={['#202025', 0, 80]} />
                     <Frame position={[10, 2, 0.5]} />
-                    <FrameVideo url="/10.mp4" position={[-3, 2, 1]} rotation={[0, 0.9, 0]} />
-                    <FrameVideo url="/10.mp4" position={[3, 2, 1]} rotation={[0, -0.9, 0]} />
-                    <FrameVideo url="/10.mp4" position={[0, 2, 5]} rotation={[0, Math.PI, 0]} />
-                    <FrameImage url="/10.jpg" position={[-3, 2, -3]} rotation={[0, 0.9, 0]} />
+                    <Suspense fallback={null}>
+                        <FrameVideo url="/10.mp4" position={[-3, 2, 1]} rotation={[0, 0.9, 0]} />
+                    </Suspense>
+                    <Suspense fallback={null}>
+                        <FrameVideo url="/10.mp4" position={[3, 2, 1]} rotation={[0, -0.9, 0]} />
+                    </Suspense>
+                    <Suspense fallback={null}>
+                        <FrameVideo url="/10.mp4" position={[0, 2, 5]} rotation={[0, Math.PI, 0]} />
+                    </Suspense>
+                    <Suspense fallback={null}>
+                        <FrameImage url="/10.jpg" position={[-3, 2, -3]} rotation={[0, 0.9, 0]} />
+                    </Suspense>
                     <drei.Text3D
                         position={[-2, 1, -1.5]}
                         font="/Inter_Bold.json"
@@ -97,7 +106,7 @@ function App() {
                         lineHeight={0.5}
                         castShadow>
                         {`Larry's Portfolio`}
-                        <meshStandardMaterial color={"#eb7734"}/>
+                        <meshStandardMaterial color={"#eb7734"} />
                     </drei.Text3D>
 
                     <drei.Plane receiveShadow args={[100, 100]} rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.5, 0]}>

@@ -8,7 +8,7 @@ import { FrameVideo } from './Frame';
 import { Physics, RigidBody, CuboidCollider } from '@react-three/rapier'
 
 import { Suspense } from 'react';
-import React from 'react';
+import React, { useRef } from 'react';
 
 function DefaultScene(props: any) {
     let turnedRotation = [props.rotation[0], props.rotation[1] + Math.PI / 6, props.rotation[2]] as [number, number, number];
@@ -72,6 +72,39 @@ function LowLevelLanguageScene(props: any) {
         </>
     )
 }
+function Earth(props: any) {
+    const group = useRef();
+    const { nodes, materials, animations } = drei.useGLTF('/earth.glb') as any;
+    const { actions } = drei.useAnimations(animations, group);
+    return (
+        <group ref={group} {...props} dispose={null}>
+            <group name="Sketchfab_Scene">
+                <group name="Sketchfab_model" rotation={[-Math.PI / 2, 0, 0]}>
+                    <group name="3f0d8c1a7c7c45138e5b99b56838fcb9fbx" rotation={[Math.PI / 2, 0, 0]}>
+                        <group name="Object_2">
+                            <group name="RootNode">
+                                <group name="Earth" rotation={[-Math.PI / 2, 0, 0]}>
+                                    <mesh
+                                        name="Earth_Material_#50_0"
+                                        geometry={nodes['Earth_Material_#50_0'].geometry}
+                                        material={materials.Material_50}
+                                    />
+                                </group>
+                                <group name="EarthClouds" rotation={[-Math.PI / 2, -Math.PI / 9, 0]} scale={1.01}>
+                                    <mesh
+                                        name="EarthClouds_Material_#62_0"
+                                        geometry={nodes['EarthClouds_Material_#62_0'].geometry}
+                                        material={materials.Material_62}
+                                    />
+                                </group>
+                            </group>
+                        </group>
+                    </group>
+                </group>
+            </group>
+        </group>)
+}
+drei.useGLTF.preload('/earth.glb');
 
 function MoonSurface(props: any) {
     const { nodes, materials } = drei.useGLTF('/scene.glb') as any;
@@ -102,7 +135,7 @@ function MainScene({ children }: { children: React.ReactNode }) {
     let radius = 20;
     return (
         <>
-            <RigidBody name='world' colliders="trimesh" position={[0, 0, 0]}>
+            <RigidBody name='world' enabledTranslations={[false, false, false]} colliders="trimesh" position={[0, 0, 0]}>
                 <MoonSurface position={[0, 0, 0]} />
             </RigidBody>
 
@@ -126,7 +159,7 @@ function MainScene({ children }: { children: React.ReactNode }) {
                         </drei.Text3D>
                     </RigidBody>
                 )
-                })}
+            })}
 
             {React.Children.map(children, (child) => {
                 if (React.isValidElement(child)) {
@@ -153,7 +186,6 @@ function EnvSettings() {
         <>
             <drei.OrbitControls />
             <drei.Stars radius={200} depth={100} count={1000} factor={5} />
-            <fog attach="fog" args={['#202025', 0, 60]} />
             <drei.SoftShadows />
             <drei.ShadowAlpha />
             <drei.Environment preset="night" shadow-mapSize={2048} />
@@ -191,6 +223,7 @@ function App() {
 
             <Canvas shadows camera={{ position: [0, 5, 0] }}>
                 <Suspense fallback={<Loader />}>
+                    <Earth position={[200, 250, 0]} scale={[10, 10, 10]} />
                     <Physics>
                         <CuboidCollider position={[0, -2, 0]} args={[20, 0.5, 20]} />
                         <EnvSettings />

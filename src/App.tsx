@@ -11,18 +11,6 @@ import React, { useRef, useMemo, useEffect } from 'react';
 import { MoonSurface, Earth, Terminal } from './Objects';
 
 
-function useTerrainHeight(terrainRef: any, position: [number, number, number]) {
-    console.log(terrainRef.current);
-    return useMemo(() => {
-        if (!terrainRef.current) return 0;
-        console.log('hi');
-        const [x, , z] = position;
-        const raycaster = new THREE.Raycaster(new THREE.Vector3(x, 1000, z), new THREE.Vector3(0, -1, 0));
-        const intersects = raycaster.intersectObject(terrainRef.current);
-
-        return intersects.length > 0 ? intersects[0].point.y : 0;
-    }, [terrainRef, position]);
-}
 function DefaultScene(props: any) {
     let turnedRotation = [props.rotation[0], props.rotation[1] + Math.PI / 6, props.rotation[2]] as [number, number, number];
     let textPosition = [props.position[0] + 5, -0.25, props.position[2]] as [number, number, number];
@@ -93,14 +81,7 @@ function MainScene({ children }: { children: React.ReactNode }) {
     // moon surface is the terrain mesh
 
     const [position, setPosition] = useState([0, 0, 0] as [number, number, number]);
-
     const terrainRef = useRef(null); // ref to the terrain mesh
-
-    const terrainHeight = useTerrainHeight(terrainRef, position);
-
-    useEffect(() => {
-        console.log(terrainHeight);
-    }, [terrainHeight]);
 
     return (
         <>
@@ -187,11 +168,10 @@ function App() {
     return (
         <>
             <VRButton />
-
-            <Canvas shadows camera={{ position: [0, 5, 0] }}>
+            <Canvas shadows>
                 <Suspense fallback={<Loader />}>
                     <Earth position={[200, 250, 0]} scale={[10, 10, 10]} />
-                    <Physics gravity={[0, -1.62, 0]} debug >
+                    <Physics gravity={[0, -1.62, 0]} >
                         <EnvSettings />
 
                         <MainScene>

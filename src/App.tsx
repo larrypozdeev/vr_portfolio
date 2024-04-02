@@ -6,29 +6,26 @@ import SmoothLocomotion from './SmoothLocomotion';
 import SnapRotation from './SnapRotation';
 import { Physics, RigidBody, CuboidCollider } from '@react-three/rapier'
 import * as THREE from 'three';
-import { Suspense } from 'react';
-import React, { useRef, useMemo } from 'react';
+import { Suspense, useState } from 'react';
+import React, { useRef, useMemo, useEffect } from 'react';
+import { MoonSurface, Earth, Terminal } from './Objects';
 
-function useTerrainHeight(position:any, terrainMesh:any) {
-  const { scene } = useThree();
-  const [x, , z] = position;
 
-  // useMemo to avoid recalculating unless dependencies change
-  return useMemo(() => {
-    // Create a raycaster pointing downwards
-    const raycaster = new THREE.Raycaster(new THREE.Vector3(x, 1000, z), new THREE.Vector3(0, -1, 0));
-    console.log(raycaster);
-    const intersects = raycaster.intersectObject(terrainMesh);
-    console.log(intersects);
+function useTerrainHeight(terrainRef: any, position: [number, number, number]) {
+    console.log(terrainRef.current);
+    return useMemo(() => {
+        if (!terrainRef.current) return 0;
+        console.log('hi');
+        const [x, , z] = position;
+        const raycaster = new THREE.Raycaster(new THREE.Vector3(x, 1000, z), new THREE.Vector3(0, -1, 0));
+        const intersects = raycaster.intersectObject(terrainRef.current);
 
-    // Return the y-coordinate of the first intersection point, or a default value if no intersection
-    return intersects.length > 0 ? intersects[0].point.y : 0;
-  }, [position, terrainMesh, scene]);
+        return intersects.length > 0 ? intersects[0].point.y : 0;
+    }, [terrainRef, position]);
 }
-
 function DefaultScene(props: any) {
     let turnedRotation = [props.rotation[0], props.rotation[1] + Math.PI / 6, props.rotation[2]] as [number, number, number];
-    let textPosition = [props.position[0]+5, -0.25, props.position[2]] as [number, number, number];
+    let textPosition = [props.position[0] + 5, -0.25, props.position[2]] as [number, number, number];
 
     return (
         <>
@@ -53,7 +50,7 @@ function DefaultScene(props: any) {
             </drei.Center>
             <Suspense fallback={"10.mp4"}>
 
-                <Terminal position={[props.position[0], props.position[1]-0.75, props.position[2]]} rotation={props.rotation} />
+                <Terminal position={[props.position[0], props.position[1] - 0.75, props.position[2]]} rotation={props.rotation} />
                 <drei.Preload all />
             </Suspense>
         </>
@@ -89,257 +86,25 @@ function LowLevelLanguageScene(props: any) {
         </>
     )
 }
-function Earth(props: any) {
-    const group = useRef();
-    const { nodes, materials } = drei.useGLTF('/earth.glb') as any;
-    return (
-        <group ref={group} {...props} dispose={null}>
-            <group name="Sketchfab_Scene">
-                <group name="Sketchfab_model" rotation={[-Math.PI / 2, 0, 0]}>
-                    <group name="3f0d8c1a7c7c45138e5b99b56838fcb9fbx" rotation={[Math.PI / 2, 0, 0]}>
-                        <group name="Object_2">
-                            <group name="RootNode">
-                                <group name="Earth" rotation={[-Math.PI / 2, 0, 0]}>
-                                    <mesh
-                                        name="Earth_Material_#50_0"
-                                        geometry={nodes['Earth_Material_#50_0'].geometry}
-                                        material={materials.Material_50}
-                                    />
-                                </group>
-                                <group name="EarthClouds" rotation={[-Math.PI / 2, -Math.PI / 9, 0]} scale={1.01}>
-                                    <mesh
-                                        name="EarthClouds_Material_#62_0"
-                                        geometry={nodes['EarthClouds_Material_#62_0'].geometry}
-                                        material={materials.Material_62}
-                                    />
-                                </group>
-                            </group>
-                        </group>
-                    </group>
-                </group>
-            </group>
-        </group>)
-}
-drei.useGLTF.preload('/earth.glb');
-
-function MoonSurface(props: any) {
-    const { nodes, materials } = drei.useGLTF('/scene.glb') as any;
-
-    return (
-        <group {...props} dispose={null}>
-            <group rotation={[-Math.PI / 2, 0, 0]} scale={70}>
-                <mesh
-                    castShadow
-                    receiveShadow
-                    geometry={nodes.Petavius_ZB_LP_1_0.geometry}
-                    material={materials.material}
-                />
-                <mesh
-                    castShadow
-                    receiveShadow
-                    geometry={nodes.Petavius_ZB_LP_2_0.geometry}
-                    material={materials.material_1}
-                />
-            </group>
-        </group>
-    )
-}
-drei.useGLTF.preload('/scene.glb');
-
-
-export function Terminal(props: any) {
-    const { nodes, materials } = drei.useGLTF('/terminal.glb') as any;
-
-    return (
-        <group {...props} dispose={null}>
-            <group scale={0.01}>
-                <group position={[0, 175.07, -6.003]} rotation={[Math.PI / 3, 0, 0]} scale={100}>
-                    <RigidBody colliders="cuboid" type="fixed" >
-                        <mesh
-                            castShadow
-                            receiveShadow
-                            geometry={nodes.Monitor_Material001_0.geometry}
-                            material={materials['Material.001']}
-                        />
-                        <mesh
-                            castShadow
-                            receiveShadow
-                            geometry={nodes.Monitor_Material005_0.geometry}
-                            material={materials['Material.005']}
-                        />
-                    </RigidBody>
-                </group>
-                <group position={[0, 168.692, -2.32]} rotation={[Math.PI / 3, 0, 0]} scale={100}>
-                    <mesh
-                        castShadow
-                        receiveShadow
-                        geometry={nodes.Monitor_Handle_Material001_0.geometry}
-                        material={materials['Material.001']}
-                    />
-                    <mesh
-                        castShadow
-                        receiveShadow
-                        geometry={nodes.Monitor_Handle_Material004_0.geometry}
-                        material={materials['Material.004']}
-                    />
-                </group>
-                <group
-                    position={[0, -2.343, -2.082]}
-                    rotation={[-Math.PI / 2, 0, 0]}
-                    scale={[100.737, 97.421, 97.421]}>
-
-                    <mesh
-                        castShadow
-                        receiveShadow
-                        geometry={nodes.Back_Material_0.geometry}
-                        material={materials.Material}
-                    />
-                    <mesh
-                        castShadow
-                        receiveShadow
-                        geometry={nodes.Back_Material001_0.geometry}
-                        material={materials['Material.001']}
-                    />
-                </group>
-                <RigidBody colliders="cuboid" type="fixed">
-                    <group position={[0, -19.616, -45.996]} rotation={[-Math.PI / 2, 0, 0]} scale={100}>
-                        <mesh
-                            castShadow
-                            receiveShadow
-                            geometry={nodes.Air_vents_back_Material001_0.geometry}
-                            material={materials['Material.001']}
-                        />
-                        <mesh
-                            castShadow
-                            receiveShadow
-                            geometry={nodes.Air_vents_back_Material004_0.geometry}
-                            material={materials['Material.004']}
-                        />
-                        <mesh
-                            castShadow
-                            receiveShadow
-                            geometry={nodes.Air_vents_back_Material003_0.geometry}
-                            material={materials['Material.003']}
-                        />
-                    </group>
-                    <group position={[-24.315, 48.317, -7.466]} rotation={[-Math.PI / 2, 0, 0]} scale={100}>
-                        <mesh
-                            castShadow
-                            receiveShadow
-                            geometry={nodes.Inside_Material001_0.geometry}
-                            material={materials['Material.001']}
-                        />
-                        <mesh
-                            castShadow
-                            receiveShadow
-                            geometry={nodes.Inside_Material004_0.geometry}
-                            material={materials['Material.004']}
-                        />
-                    </group>
-                </RigidBody>
-                <group rotation={[-Math.PI / 2, 0, 0]} scale={100}>
-                    <mesh
-                        castShadow
-                        receiveShadow
-                        geometry={nodes.Front_Panel_Material003_0.geometry}
-                        material={materials['Material.003']}
-                    />
-                    <mesh
-                        castShadow
-                        receiveShadow
-                        geometry={nodes.Front_Panel_Material001_0.geometry}
-                        material={materials['Material.001']}
-                    />
-                    <mesh
-                        castShadow
-                        receiveShadow
-                        geometry={nodes.Front_Panel_Material004_0.geometry}
-                        material={materials['Material.004']}
-                    />
-                </group>
-                <group position={[0, -102.538, -45.498]} rotation={[-Math.PI / 2, 0, 0]} scale={100}>
-                    <RigidBody colliders="cuboid" type="fixed">
-                    <mesh
-                        castShadow
-                        receiveShadow
-                        geometry={nodes.Base_Material002_0.geometry}
-                        material={materials['Material.002']}
-                    />
-                    <mesh
-                        castShadow
-                        receiveShadow
-                        geometry={nodes.Base_Material002_0_1.geometry}
-                        material={materials['Material.002']}
-                    />
-                    <mesh
-                        castShadow
-                        receiveShadow
-                        geometry={nodes.Base_Material002_0_2.geometry}
-                        material={materials['Material.002']}
-                    />
-                    <mesh
-                        castShadow
-                        receiveShadow
-                        geometry={nodes.Base_Material001_0.geometry}
-                        material={materials['Material.001']}
-                    />
-                    <mesh
-                        castShadow
-                        receiveShadow
-                        geometry={nodes.Base_Material009_0.geometry}
-                        material={materials['Material.009']}
-                    />
-                    <mesh
-                        castShadow
-                        receiveShadow
-                        geometry={nodes.Base_Material003_0.geometry}
-                        material={materials['Material.003']}
-                    />
-                    </RigidBody>
-                </group>
-                <RigidBody colliders="cuboid" type="fixed">
-                    <mesh
-                        castShadow
-                        receiveShadow
-                        geometry={nodes.Body_Material004_0.geometry}
-                        material={materials['Material.004']}
-                        rotation={[-Math.PI / 2, 0, 0]}
-                        scale={100}
-                    />
-                </RigidBody>
-                <mesh
-                    castShadow
-                    receiveShadow
-                    geometry={nodes.Side_panels_Material001_0.geometry}
-                    material={materials['Material.001']}
-                    position={[0, 7.391, 0]}
-                    rotation={[-Math.PI / 2, 0, 0]}
-                    scale={100}
-                />
-                <mesh
-                    castShadow
-                    receiveShadow
-                    geometry={nodes.Handles_Material002_0.geometry}
-                    material={materials['Material.002']}
-                    position={[-4.639, 0.262, 7.872]}
-                    rotation={[-Math.PI / 2, 0, 0]}
-                    scale={100}
-                />
-            </group>
-        </group>
-    )
-}
-
-drei.useGLTF.preload('/terminal.glb')
 
 function MainScene({ children }: { children: React.ReactNode }) {
     let i = 0;
     let radius = 22;
+    // moon surface is the terrain mesh
+
+    const [position, setPosition] = useState([0, 0, 0] as [number, number, number]);
+
+    const terrainRef = useRef(null); // ref to the terrain mesh
+
+    const terrainHeight = useTerrainHeight(terrainRef, position);
+
+    useEffect(() => {
+        console.log(terrainHeight);
+    }, [terrainHeight]);
+
     return (
         <>
-            <RigidBody name='world' type='fixed' colliders="trimesh" position={[0, 0, 0]}>
-                <MoonSurface position={[0, 0, 0]} />
-            </RigidBody>
+            <MoonSurface name='terrain' ref={terrainRef} setPosition={setPosition} position={[0, 0, 0]} />
 
             {'Portfolio'.split('').map((letter, index) => {
                 return (
@@ -364,12 +129,13 @@ function MainScene({ children }: { children: React.ReactNode }) {
             })}
 
             {React.Children.map(children, (child) => {
+                let position = [
+                    Math.sin(i * Math.PI / 2) * radius,
+                    1,
+                    Math.cos(i * Math.PI / 2) * radius
+                ];
+
                 if (React.isValidElement(child)) {
-                    let position = [
-                        Math.sin(i * Math.PI / 2) * radius,
-                        1,
-                        Math.cos(i * Math.PI / 2) * radius
-                    ];
                     let rotation = [0, i * Math.PI / 2 + Math.PI, 0];
                     i += 1;
                     return React.cloneElement(child, {
@@ -379,7 +145,6 @@ function MainScene({ children }: { children: React.ReactNode }) {
                     })
                 }
             })}
-
         </>
     )
 }
@@ -426,11 +191,9 @@ function App() {
             <Canvas shadows camera={{ position: [0, 5, 0] }}>
                 <Suspense fallback={<Loader />}>
                     <Earth position={[200, 250, 0]} scale={[10, 10, 10]} />
-                    <Physics >
-                        <CuboidCollider position={[0, -2, 0]} args={[20, 0.5, 20]} />
+                    <Physics gravity={[0, -1.62, 0]} debug >
                         <EnvSettings />
 
-                        <Terminal position={[0, 2, 0]} />
                         <MainScene>
                             <WebScene />
                             <GameDevScene />

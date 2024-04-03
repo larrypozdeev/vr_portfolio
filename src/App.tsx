@@ -18,14 +18,14 @@ function DefaultText(props: any) {
                 return (
                     <RigidBody colliders={"cuboid"} key={idx}>
                         <drei.Text3D
-                            position={[props.position[0] + idx * 0.5, props.position[1], props.position[2]]}
+                            position={[props.position[0] + idx * 0.45, props.position[1], props.position[2]]}
                             font="/Inter_Bold.json"
                             curveSegments={32}
                             bevelEnabled
                             bevelSize={0.02}
                             bevelThickness={0.1}
                             height={0.5}
-                            scale={[1, 1, 0.25]}
+                            scale={[1, 1, 0.55]}
                             size={0.4}
                             lineHeight={0.5}
                             castShadow>
@@ -56,16 +56,14 @@ function WebScene(props: any) {
 }
 
 function GameDevScene(props: any) {
-    const videos = ['/gamedev1.mp4', '/gamedev2.mp4'];
+    const videos = ['/gamedev1.mp4', '/gamedev2.mp4', '/gamedev3.mp4'];
 
-    videos.forEach((video) => {
-        drei.useVideoTexture(video);
-    });
     return (
         <>
             <DefaultTerminal
                 videos={videos}
-                position={[5, 0.5, -15]} />
+                position={[5, 0.2, -15]} />
+            <DefaultText text="Game Development" position={[5, -0.1, -14]} />
         </>
     )
 }

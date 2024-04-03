@@ -1,11 +1,10 @@
-import React, { forwardRef, useRef, useState } from 'react';
+import React, { forwardRef, Suspense, useRef, useState } from 'react';
 import * as drei from '@react-three/drei';
 import { CuboidCollider, RigidBody } from '@react-three/rapier';
 import { useEffect } from 'react';
 import * as THREE from 'three';
 import { Button } from './Button';
 import { XR } from '@react-three/xr';
-import { useLoader, useThree } from 'react-three-fiber';
 
 export function Earth(props: any) {
     const group = useRef();
@@ -43,11 +42,6 @@ drei.useGLTF.preload('/earth.glb');
 export const MoonSurface = forwardRef((props: any, ref: any) => {
     const { nodes, materials } = drei.useGLTF('/scene.glb') as any;
 
-    useEffect(() => {
-        if (ref.current) {
-        }
-    }, [ref]);
-
     return (
         <>
             <group {...props} ref={ref} dispose={null}>
@@ -81,10 +75,20 @@ export const MoonSurface = forwardRef((props: any, ref: any) => {
 })
 drei.useGLTF.preload('/scene.glb');
 
+
 export function Terminal(props: any) {
-    const [isOff, setIsOff] = useState(false);
+    function SuspenseFallback() {
+        return <mesh
+            castShadow
+            receiveShadow
+            geometry={nodes.Monitor_Material005_0.geometry}
+            material={new THREE.MeshBasicMaterial({ color: 0x000000 })}
+        />
+    }
+    const [isOff, setIsOff] = useState(true);
     const [currentVideo, setCurrentVideo] = useState(0);
 
+    const texture = drei.useVideoTexture(props.videos[currentVideo]);
     function prevVideo() {
         setCurrentVideo((currentVideo - 1) % props.videos.length);
     }
@@ -94,16 +98,15 @@ export function Terminal(props: any) {
 
     const { nodes, materials } = drei.useGLTF('/terminal3.glb') as any;
 
-    const texture = drei.useVideoTexture(props.videos[currentVideo]);
-    texture.wrapS = texture.wrapT = THREE.MirroredRepeatWrapping;
-    texture.flipY = false;
-    texture.repeat.set(1, 1);
 
     let material: THREE.MeshBasicMaterial;
 
     if (isOff) {
         material = new THREE.MeshBasicMaterial({ color: 0x000000 });
     } else {
+        texture.wrapS = texture.wrapT = THREE.MirroredRepeatWrapping;
+        texture.flipY = false;
+        texture.repeat.set(1, 1);
         material = new THREE.MeshBasicMaterial({ map: texture });
     }
 
@@ -150,11 +153,13 @@ export function Terminal(props: any) {
                 <group position={[0, -102.538, -45.498]} rotation={[-Math.PI / 2, 0, 0]} scale={100}>
                     <CuboidCollider
                         sensor
-                        onIntersectionEnter={() => setIsOff(false)}
-                        onIntersectionExit={() => setIsOff(true)}
-                        position={[0,-2,0]}
+                        //if name is player in payload, then setisoff
+
+                        onIntersectionEnter={(payload) => payload.other?.rigidBodyObject?.name === 'player' ? setIsOff(false) : null}
+                        onIntersectionExit={(payload) => setIsOff(true)}
+                        position={[0, -2, 0]}
                         args={[3, 3, 3]}
-                        />
+                    />
 
                     <mesh
                         castShadow
@@ -236,12 +241,14 @@ export function Terminal(props: any) {
                             geometry={nodes.Monitor_Material001_0.geometry}
                             material={materials['Material.001']}
                         />
-                        <mesh
-                            castShadow
-                            receiveShadow
-                            geometry={nodes.Monitor_Material005_0.geometry}
-                            material={material}
-                        />
+                        <Suspense fallback={SuspenseFallback()}>
+                            <mesh
+                                castShadow
+                                receiveShadow
+                                geometry={nodes.Monitor_Material005_0.geometry}
+                                material={material}
+                            />
+                        </Suspense>
                     </group>
                 </RigidBody>
 

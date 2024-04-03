@@ -34,7 +34,7 @@ export default function SmoothLocomotion({ hand = 'left' }) {
     ref.current.setLinvel({ x: direction.x, y: velY, z: direction.z })
   })
   return (
-    <RigidBody ref={ref} mass={1} type="dynamic" position={[0, 10, 0]} enabledRotations={[false, false, false]} >
+    <RigidBody ref={ref} name={'player'} mass={1} type="dynamic" position={[0, 10, 0]} enabledRotations={[false, false, false]} >
       <CapsuleCollider args={[0.75, 0.5]} />
     </RigidBody>
   )

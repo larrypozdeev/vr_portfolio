@@ -89,8 +89,9 @@ export function Terminal(props: any) {
     const [currentVideo, setCurrentVideo] = useState(0);
 
     const texture = drei.useVideoTexture(props.videos[currentVideo]);
+
     function prevVideo() {
-        setCurrentVideo((currentVideo - 1) % props.videos.length);
+        setCurrentVideo(Math.abs(currentVideo-1) % props.videos.length);
     }
     function nextVideo() {
         setCurrentVideo((currentVideo + 1) % props.videos.length);

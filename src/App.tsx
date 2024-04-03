@@ -58,6 +58,11 @@ function WebScene(props: any) {
 function GameDevScene(props: any) {
     const videos = ['/gamedev1.mp4', '/gamedev2.mp4', '/gamedev3.mp4'];
 
+    // preload videos
+    videos.forEach((video) => {
+        drei.useVideoTexture(video);
+    });
+
     return (
         <>
             <DefaultTerminal

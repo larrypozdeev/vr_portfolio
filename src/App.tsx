@@ -1,14 +1,14 @@
 import { Hands, VRButton, XR, Controllers } from '@react-three/xr'
 
-import { Canvas, useThree } from '@react-three/fiber'
+import { Canvas } from '@react-three/fiber'
 import * as drei from '@react-three/drei';
 import SmoothLocomotion from './SmoothLocomotion';
 import SnapRotation from './SnapRotation';
-import { Physics, RigidBody, CuboidCollider } from '@react-three/rapier'
-import * as THREE from 'three';
+import { Physics, RigidBody } from '@react-three/rapier'
 import { Suspense, useState } from 'react';
-import React, { useRef, useMemo, useEffect } from 'react';
+import React, { useRef } from 'react';
 import { MoonSurface, Earth, Terminal } from './Objects';
+import { Button } from './Button';
 
 
 function DefaultScene(props: any) {
@@ -82,7 +82,6 @@ function MainScene({ children }: { children: React.ReactNode }) {
 
     const [position, setPosition] = useState([0, 0, 0] as [number, number, number]);
     const terrainRef = useRef(null); // ref to the terrain mesh
-
     return (
         <>
             <MoonSurface name='terrain' ref={terrainRef} setPosition={setPosition} position={[0, 0, 0]} />
@@ -132,10 +131,11 @@ function MainScene({ children }: { children: React.ReactNode }) {
 function EnvSettings() {
     return (
         <>
-            <drei.OrbitControls />
+            <drei.Stats />
             <drei.Stars radius={200} depth={100} count={1000} factor={5} />
             <drei.SoftShadows />
             <drei.ShadowAlpha />
+            <drei.OrbitControls enableRotate enableZoom={false} />
             <drei.Environment preset="night" shadow-mapSize={2048} />
             <directionalLight position={[0, 10, 10]} intensity={1.5} castShadow shadow-mapSize={2048} />
         </>
@@ -149,6 +149,9 @@ function XRSettings() {
                 <Controllers />
                 <SmoothLocomotion />
                 <SnapRotation />
+                <group position={[0, 5, 0]}>
+                    <Button label={'click'} onClick={() => { console.log('clicked') }} />
+                </group>
             </XR>
         </>
     )
@@ -170,16 +173,16 @@ function App() {
             <VRButton />
             <Canvas shadows>
                 <Suspense fallback={<Loader />}>
-                    <Earth position={[200, 250, 0]} scale={[10, 10, 10]} />
+                    <Earth position={[500, 550, 0]} scale={[25, 25, 25]} />
                     <Physics gravity={[0, -1.62, 0]} >
                         <EnvSettings />
-
                         <MainScene>
                             <WebScene />
                             <GameDevScene />
                             <DataWorkScene />
                             <LowLevelLanguageScene />
                         </MainScene>
+
 
                         <XRSettings />
                     </Physics>

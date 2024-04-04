@@ -1,7 +1,9 @@
 .App {
   text-align: center;
 }
-
+.hidden {
+  display: none;
+}
 span {
   position: absolute;
   top: 50%;

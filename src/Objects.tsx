@@ -102,8 +102,39 @@ export function Terminal(props: any) {
 
     }
 
+    function InfoScreen(props: any) {
+        if (isOff) {
+            return null;
+        }
+        return (
+            <>
+                <mesh
+                    position={[0, 0.5, 1]}
+                    scale={[1.5, 1, 0.1]}
+                    castShadow
+                    receiveShadow
+                >
+                    <planeGeometry args={[1.5, 1]} />
+                    <meshStandardMaterial color={"#eb7734"} transparent opacity={0.5} />
+                </mesh>
+                <drei.Text
+                    color="black"
+                    fontSize={0.15}
+                    maxWidth={2}
+                    lineHeight={0.5}
+                    textAlign="center"
+                    castShadow
+                    position={[0, 0.5, 1.05]}
+                >
+                    {props.info}
+                    <meshStandardMaterial color={"#eb7734"} />
+                </drei.Text>
+            </>
+        )
+    }
+
     props.videos.forEach((video: any) => {
-        let temp = drei.useVideoTexture(video,{start:false});
+        let temp = drei.useVideoTexture(video, { start: false });
         temp.dispose();
     });
 
@@ -111,11 +142,7 @@ export function Terminal(props: any) {
     const [currentVideo, setCurrentVideo] = useState(0);
     let texture: any = null;
 
-    if (props.videos) {
-        if (props.videos.length) {
-            texture = drei.useVideoTexture(props.videos[currentVideo]);
-        }
-    }
+    texture = drei.useVideoTexture(props.videos[currentVideo]);
 
 
 
@@ -132,9 +159,8 @@ export function Terminal(props: any) {
         setCurrentVideo((currentVideo + 1) % props.videos.length);
     }
 
+
     const { nodes, materials } = drei.useGLTF('/terminal3.glb') as any;
-
-
 
     return (
         <group {...props} dispose={null}>
@@ -180,7 +206,7 @@ export function Terminal(props: any) {
                     <CuboidCollider
                         sensor
                         onIntersectionEnter={(payload) => payload.other?.rigidBodyObject?.name === 'player' ? setIsOff(false) : null}
-                        onIntersectionExit={(payload) => payload.other?.rigidBodyObject?.name ==='player' ? setIsOff(true):null}
+                        onIntersectionExit={(payload) => payload.other?.rigidBodyObject?.name === 'player' ? setIsOff(true) : null}
                         position={[0, -2, 0]}
                         args={[3, 3, 3]}
                     />
@@ -317,6 +343,7 @@ export function Terminal(props: any) {
                     label="prev"
                     position={[-1.2, 1, 0]}
                     onClick={() => prevVideo()} />
+                <InfoScreen info={'hi'} />
                 <Button
                     label="next"
                     position={[1.2, 1, 0]}

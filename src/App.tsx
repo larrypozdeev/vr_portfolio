@@ -103,7 +103,6 @@ function EnvSettings() {
             <drei.Stars radius={200} depth={100} count={1000} factor={5} />
             <drei.SoftShadows />
             <drei.ShadowAlpha />
-            <drei.OrbitControls enableRotate enableZoom={true} />
             <ambientLight intensity={0.1} />
             <directionalLight position={[0, 10, 10]} intensity={1.5} castShadow shadow-mapSize={2048} />
         </>
@@ -115,8 +114,8 @@ function XRSettings() {
             <XR>
                 <Hands />
                 <Controllers />
-                <SmoothLocomotion />
                 <SnapRotation />
+                <SmoothLocomotion />
             </XR>
         </>
     )

@@ -1,4 +1,4 @@
-import React, { forwardRef, Suspense, useRef, useState } from 'react';
+import React, { forwardRef, Suspense, useMemo, useRef, useState } from 'react';
 import * as drei from '@react-three/drei';
 import { CuboidCollider, RigidBody } from '@react-three/rapier';
 import { useEffect } from 'react';
@@ -77,39 +77,64 @@ drei.useGLTF.preload('/scene.glb');
 
 
 export function Terminal(props: any) {
-    function SuspenseFallback() {
-        return <mesh
-            castShadow
-            receiveShadow
-            geometry={nodes.Monitor_Material005_0.geometry}
-            material={new THREE.MeshBasicMaterial({ color: 0x000000 })}
-        />
+    function VideoScreen() {
+        let material = new THREE.MeshBasicMaterial({ color: 0x000000 });
+
+        if (!isOff && props.videos) {
+            if (props.videos.length) {
+                texture.wrapS = texture.wrapT = THREE.MirroredRepeatWrapping;
+                texture.flipY = false;
+                texture.repeat.set(1, 1);
+                material = new THREE.MeshBasicMaterial({ map: texture });
+            }
+        }
+
+        return (
+            <>
+                <mesh
+                    castShadow
+                    receiveShadow
+                    geometry={nodes.Monitor_Material005_0.geometry}
+                    material={material}
+                />
+            </>
+        )
+
     }
+
+    props.videos.forEach((video: any) => {
+        let temp = drei.useVideoTexture(video,{start:false});
+        temp.dispose();
+    });
+
     const [isOff, setIsOff] = useState(true);
     const [currentVideo, setCurrentVideo] = useState(0);
+    let texture: any = null;
 
-    const texture = drei.useVideoTexture(props.videos[currentVideo]);
+    if (props.videos) {
+        if (props.videos.length) {
+            texture = drei.useVideoTexture(props.videos[currentVideo]);
+        }
+    }
+
+
 
     function prevVideo() {
-        setCurrentVideo(Math.abs(currentVideo-1) % props.videos.length);
+        if (props.videos.length) {
+            texture.dispose();
+        }
+        setCurrentVideo(Math.abs(currentVideo - 1) % props.videos.length);
     }
     function nextVideo() {
+        if (props.videos.length) {
+            texture.dispose();
+        }
         setCurrentVideo((currentVideo + 1) % props.videos.length);
     }
 
     const { nodes, materials } = drei.useGLTF('/terminal3.glb') as any;
 
 
-    let material: THREE.MeshBasicMaterial;
-
-    if (isOff) {
-        material = new THREE.MeshBasicMaterial({ color: 0x000000 });
-    } else {
-        texture.wrapS = texture.wrapT = THREE.MirroredRepeatWrapping;
-        texture.flipY = false;
-        texture.repeat.set(1, 1);
-        material = new THREE.MeshBasicMaterial({ map: texture });
-    }
 
     return (
         <group {...props} dispose={null}>
@@ -154,10 +179,8 @@ export function Terminal(props: any) {
                 <group position={[0, -102.538, -45.498]} rotation={[-Math.PI / 2, 0, 0]} scale={100}>
                     <CuboidCollider
                         sensor
-                        //if name is player in payload, then setisoff
-
                         onIntersectionEnter={(payload) => payload.other?.rigidBodyObject?.name === 'player' ? setIsOff(false) : null}
-                        onIntersectionExit={(payload) => setIsOff(true)}
+                        onIntersectionExit={(payload) => payload.other?.rigidBodyObject?.name ==='player' ? setIsOff(true):null}
                         position={[0, -2, 0]}
                         args={[3, 3, 3]}
                     />
@@ -242,14 +265,7 @@ export function Terminal(props: any) {
                             geometry={nodes.Monitor_Material001_0.geometry}
                             material={materials['Material.001']}
                         />
-                        <Suspense fallback={SuspenseFallback()}>
-                            <mesh
-                                castShadow
-                                receiveShadow
-                                geometry={nodes.Monitor_Material005_0.geometry}
-                                material={material}
-                            />
-                        </Suspense>
+                        <VideoScreen />
                     </group>
                 </RigidBody>
 

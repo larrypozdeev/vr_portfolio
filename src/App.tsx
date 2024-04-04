@@ -5,7 +5,7 @@ import * as drei from '@react-three/drei';
 import SmoothLocomotion from './SmoothLocomotion';
 import SnapRotation from './SnapRotation';
 import { MeshCollider, Physics, RigidBody } from '@react-three/rapier'
-import { Suspense, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import React, { useRef } from 'react';
 import { MoonSurface, Earth, Terminal } from './Objects';
 import { Button } from './Button';
@@ -42,7 +42,9 @@ function DefaultTerminal(props: any) {
     return (
         <>
             <group position={props.position || [0, 0, 0]}>
-                <Terminal position={[0, 0, 0]} videos={props.videos} />
+                <Suspense fallback={null}>
+                    <Terminal videos={props.videos} />
+                </Suspense>
             </group>
         </>
     )
@@ -58,10 +60,6 @@ function WebScene(props: any) {
 function GameDevScene(props: any) {
     const videos = ['/gamedev1.mp4', '/gamedev2.mp4', '/gamedev3.mp4'];
 
-    // preload videos
-    videos.forEach((video) => {
-        drei.useVideoTexture(video);
-    });
 
     return (
         <>
@@ -125,7 +123,15 @@ function XRSettings() {
 }
 function Loader() {
     const { progress } = drei.useProgress();
+    useEffect(() => {
+        drei.useGLTF.preload('/gamedev1.mp4');
+        drei.useGLTF.preload('/gamedev2.mp4');
+        drei.useGLTF.preload('/gamedev3.mp4');
+    }, []);
+
+
     return (
+
         <drei.Html center>
             <h1 style={{ color: 'white' }}>
                 {Math.round(progress)}%&nbsp;loaded
@@ -146,8 +152,8 @@ function App() {
                         <MainScene />
                         <XRSettings />
                     </Physics>
+                    <drei.Preload all />
                 </Suspense>
-                <drei.Preload all />
             </Canvas >
         </>
     )

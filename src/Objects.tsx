@@ -337,17 +337,15 @@ export function Terminal(props: any) {
                     scale={100}
                 />
             </group>
-            <XR>
-                <Button
-                    label="prev"
-                    position={[-1.2, 1, 0]}
-                    onClick={() => prevVideo()} />
-                <InfoScreen info={'hi'} />
-                <Button
-                    label="next"
-                    position={[1.2, 1, 0]}
-                    onClick={() => nextVideo()} />
-            </XR>
+            <Button
+                label="prev"
+                position={[-1.2, 1, 0]}
+                onClick={() => prevVideo()} />
+            <InfoScreen info={'hi'} />
+            <Button
+                label="next"
+                position={[1.2, 1, 0]}
+                onClick={() => nextVideo()} />
 
         </group>
     )

@@ -53,6 +53,7 @@ function DefaultTerminal(props: any) {
 function WebScene() {
     return (
         <>
+
         </>
     )
 }
@@ -81,6 +82,7 @@ function DataWorkScene() {
 function LowLevelLanguageScene() {
     return (
         <>
+
         </>
     )
 }
@@ -114,12 +116,10 @@ function EnvSettings() {
 function XRSettings() {
     return (
         <>
-            <XR>
-                <Hands />
-                <Controllers />
-                <SnapRotation />
-                <Player position={[0, 5, 2]} />
-            </XR>
+            <Hands />
+            <Controllers />
+            <SnapRotation />
+            <Player position={[0, 5, 2]} />
         </>
     )
 }
@@ -162,16 +162,18 @@ function App() {
 
             <KeyboardControls map={map}>
                 <Canvas shadows >
-                    <Suspense fallback={<Loader />}>
-                        <Earth position={[500, 550, 0]} rotate={[1, 1, 1]} scale={[25, 25, 25]} />
-                        <Physics gravity={[0, -1.62, 0]} >
-                            <EnvSettings />
-                            <MainScene />
-                            <XRSettings />
-                        </Physics>
-                        <drei.Preload all />
-                        <PointerLockControls />
-                    </Suspense>
+                    <XR>
+                        <Suspense fallback={<Loader />}>
+                            <Earth position={[500, 550, 0]} rotate={[1, 1, 1]} scale={[25, 25, 25]} />
+                            <Physics gravity={[0, -1.62, 0]} >
+                                <XRSettings />
+                                <EnvSettings />
+                                <MainScene />
+                            </Physics>
+                            <drei.Preload all />
+                            <PointerLockControls />
+                        </Suspense>
+                    </XR>
                 </Canvas >
             </KeyboardControls>
         </>

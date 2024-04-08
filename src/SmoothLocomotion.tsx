@@ -1,4 +1,4 @@
-import { useKeyboardControls } from '@react-three/drei';
+import { PerspectiveCamera, useKeyboardControls } from '@react-three/drei';
 import { RigidBody, CapsuleCollider } from '@react-three/rapier';
 import { useController, useXR } from '@react-three/xr'
 import { useRef } from 'react';
@@ -23,6 +23,7 @@ export default function Player({ position, hand = 'left' }: any) {
     let refT = ref.current.translation();
 
     camera.position.set(refT.x, refT.y + 1.1, refT.z);
+
     if (controller?.inputSource?.gamepad) {
       player.position.set(refT.x, refT.y, refT.z);
       const [, , ax, ay] = controller.inputSource.gamepad.axes;

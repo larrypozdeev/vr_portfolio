@@ -8,7 +8,7 @@ import { Physics, RigidBody } from '@react-three/rapier'
 import { Suspense, useEffect, useMemo } from 'react';
 import { useRef } from 'react';
 import { MoonSurface, Earth, Terminal } from './Objects';
-import { KeyboardControls, PointerLockControls } from '@react-three/drei';
+import { Fisheye, KeyboardControls, PointerLockControls } from '@react-three/drei';
 
 
 function DefaultText(props: any) {
@@ -104,10 +104,8 @@ function MainScene() {
 function EnvSettings() {
     return (
         <>
-            <drei.Stats />
             <drei.Stars radius={200} depth={100} count={1000} factor={5} />
             <drei.SoftShadows />
-            <drei.ShadowAlpha />
             <ambientLight intensity={0.1} />
             <directionalLight position={[0, 10, 10]} intensity={1.5} castShadow shadow-mapSize={2048} />
         </>

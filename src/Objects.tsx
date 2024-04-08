@@ -1,7 +1,6 @@
-import React, { forwardRef, Suspense, useMemo, useRef, useState } from 'react';
+import React, { forwardRef, useRef, useState } from 'react';
 import * as drei from '@react-three/drei';
 import { CuboidCollider, RigidBody } from '@react-three/rapier';
-import { useEffect } from 'react';
 import * as THREE from 'three';
 import { Button } from './Button';
 import { XR } from '@react-three/xr';

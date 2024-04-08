@@ -5,7 +5,7 @@ import * as drei from '@react-three/drei';
 import Player from './SmoothLocomotion';
 import SnapRotation from './SnapRotation';
 import { Physics, RigidBody } from '@react-three/rapier'
-import { Suspense, useEffect, useMemo, useState } from 'react';
+import { Suspense, useEffect, useMemo } from 'react';
 import { useRef } from 'react';
 import { MoonSurface, Earth, Terminal } from './Objects';
 import { KeyboardControls, PointerLockControls } from '@react-three/drei';
@@ -50,14 +50,14 @@ function DefaultTerminal(props: any) {
     )
 }
 
-function WebScene(props: any) {
+function WebScene() {
     return (
         <>
         </>
     )
 }
 
-function GameDevScene(props: any) {
+function GameDevScene() {
     const videos = ['/gamedev1.mp4', '/gamedev2.mp4', '/gamedev3.mp4'];
 
 
@@ -71,13 +71,14 @@ function GameDevScene(props: any) {
     )
 }
 
-function DataWorkScene(props: any) {
+function DataWorkScene() {
     return (
         <>
+
         </>
     )
 }
-function LowLevelLanguageScene(props: any) {
+function LowLevelLanguageScene() {
     return (
         <>
         </>
@@ -87,12 +88,14 @@ function LowLevelLanguageScene(props: any) {
 function MainScene() {
     // moon surface is the terrain mesh
 
-    const [position, setPosition] = useState([0, 0, 0] as [number, number, number]);
     const terrainRef = useRef(null); // ref to the terrain mesh
     return (
         <>
             <GameDevScene />
-            <MoonSurface name='terrain' ref={terrainRef} setPosition={setPosition} position={[0, 0, 0]} />
+            <WebScene />
+            <LowLevelLanguageScene />
+            <DataWorkScene />
+            <MoonSurface name='terrain' ref={terrainRef} position={[0, 0, 0]} />
         </>
     )
 }
@@ -140,11 +143,6 @@ function Loader() {
 }
 
 function App() {
-    type KeyboardControlsEntry<T extends string = string> = {
-        name: T
-        keys: string[]
-        up?: boolean
-    }
     enum Controls {
         forward = 'forward',
         back = 'back',
@@ -153,12 +151,12 @@ function App() {
         jump = 'jump',
     }
 
-    const map = useMemo<KeyboardControlsEntry<Controls>[]>(() => [
+    const map = useMemo<any>(() => [
         { name: Controls.forward, keys: ['ArrowUp', 'KeyW'] },
         { name: Controls.back, keys: ['ArrowDown', 'KeyS'] },
         { name: Controls.left, keys: ['ArrowLeft', 'KeyA'] },
         { name: Controls.right, keys: ['ArrowRight', 'KeyD'] },
-    ], []) as any
+    ], [Controls.forward, Controls.back, Controls.left, Controls.right]) as any
 
     return (
         <>

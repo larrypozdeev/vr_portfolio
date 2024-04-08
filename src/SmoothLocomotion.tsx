@@ -1,5 +1,5 @@
 import { useKeyboardControls } from '@react-three/drei';
-import { RigidBody, CapsuleCollider, useRapier } from '@react-three/rapier';
+import { RigidBody, CapsuleCollider } from '@react-three/rapier';
 import { useController, useXR } from '@react-three/xr'
 import { useRef } from 'react';
 import { useFrame, useThree } from 'react-three-fiber'

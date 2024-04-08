@@ -43,7 +43,7 @@ function DefaultTerminal(props: any) {
         <>
             <group position={props.position || [0, 0, 0]}>
                 <Suspense fallback={null}>
-                    <Terminal videos={props.videos}/>
+                    <Terminal videos={props.videos} />
                 </Suspense>
             </group>
         </>
@@ -131,9 +131,7 @@ function Loader() {
         drei.useGLTF.preload('/gamedev3.mp4');
     }, []);
 
-
     return (
-
         <drei.Html center>
             <h1 style={{ color: 'white' }}>
                 {Math.round(progress)}%&nbsp;loaded
@@ -172,8 +170,8 @@ function App() {
                             <XRSettings />
                         </Physics>
                         <drei.Preload all />
+                        <PointerLockControls />
                     </Suspense>
-                    <PointerLockControls />
                 </Canvas >
             </KeyboardControls>
         </>

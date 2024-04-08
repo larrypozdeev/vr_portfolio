@@ -1,7 +1,6 @@
 {
   "name": "vr_portfolio",
   "version": "0.1.0",
-  "homepage": "https://larrypozdeev.github.io/vr_portfolio/",
   "private": true,
   "dependencies": {
     "@react-three/drei": "^9.97.5",

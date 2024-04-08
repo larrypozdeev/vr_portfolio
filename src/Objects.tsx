@@ -3,7 +3,6 @@ import * as drei from '@react-three/drei';
 import { CuboidCollider, RigidBody } from '@react-three/rapier';
 import * as THREE from 'three';
 import { Button } from './Button';
-import { XR } from '@react-three/xr';
 
 export function Earth(props: any) {
     const group = useRef();
@@ -38,12 +37,12 @@ export function Earth(props: any) {
 }
 drei.useGLTF.preload('/earth.glb');
 
-export const MoonSurface = forwardRef((props: any, ref: any) => {
+export function MoonSurface(props: any) {
     const { nodes, materials } = drei.useGLTF('/scene.glb') as any;
 
     return (
         <>
-            <group {...props} ref={ref} dispose={null}>
+            <group {...props} dispose={null}>
                 <group rotation={[-Math.PI / 2, 0, 0]} scale={70}>
 
                     <RigidBody name='world' type='fixed' colliders="trimesh" position={[0, 0, 0]}>
@@ -61,17 +60,28 @@ export const MoonSurface = forwardRef((props: any, ref: any) => {
                         material={materials.material_1}
                     />
                 </group>
+                <RigidBody type='fixed'>
+                    <CuboidCollider
+                        args={[1, 30, 50]}
+                        position={[50, 30, 0]}
+                    />
+                    <CuboidCollider
+                        args={[1, 30, 50]}
+                        position={[-50, 30, 0]}
+                    />
+                    <CuboidCollider
+                        args={[50, 30, 1]}
+                        position={[0, 30, 50]}
+                    />
+                    <CuboidCollider
+                        args={[50, 30, 1]}
+                        position={[0, 30, -50]}
+                    />
+                </RigidBody>
             </group>
-            {React.Children.map(props.children, (child) => {
-                return React.cloneElement(child, {
-                    ...child.props,
-                    position: props.position,
-                    rotation: props.rotation
-                })
-            })}
         </>
     )
-})
+}
 drei.useGLTF.preload('/scene.glb');
 
 

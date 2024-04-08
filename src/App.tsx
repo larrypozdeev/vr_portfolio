@@ -8,7 +8,7 @@ import { Physics, RigidBody } from '@react-three/rapier'
 import { Suspense, useEffect, useMemo } from 'react';
 import { useRef } from 'react';
 import { MoonSurface, Earth, Terminal } from './Objects';
-import { Fisheye, KeyboardControls, PointerLockControls } from '@react-three/drei';
+import { KeyboardControls, PointerLockControls } from '@react-three/drei';
 
 
 function DefaultText(props: any) {
@@ -28,7 +28,8 @@ function DefaultText(props: any) {
                             scale={[1, 1, 0.55]}
                             size={0.4}
                             lineHeight={0.5}
-                            castShadow>
+                            castShadow
+                            receiveShadow>
                             {letter}
                             <meshStandardMaterial color={"#eb7734"} />
                         </drei.Text3D>
@@ -43,7 +44,7 @@ function DefaultTerminal(props: any) {
         <>
             <group position={props.position || [0, 0, 0]}>
                 <Suspense fallback={null}>
-                    <Terminal videos={props.videos} />
+                    <Terminal videos={props.videos} receiveShadow castShadow/>
                 </Suspense>
             </group>
         </>
@@ -90,14 +91,13 @@ function LowLevelLanguageScene() {
 function MainScene() {
     // moon surface is the terrain mesh
 
-    const terrainRef = useRef(null); // ref to the terrain mesh
     return (
         <>
             <GameDevScene />
             <WebScene />
             <LowLevelLanguageScene />
             <DataWorkScene />
-            <MoonSurface name='terrain' ref={terrainRef} position={[0, 0, 0]} />
+            <MoonSurface receiveShadows name='terrain' position={[0, 0, 0]} />
         </>
     )
 }
@@ -107,7 +107,7 @@ function EnvSettings() {
             <drei.Stars radius={200} depth={100} count={1000} factor={5} />
             <drei.SoftShadows />
             <ambientLight intensity={0.1} />
-            <directionalLight position={[0, 10, 10]} intensity={1.5} castShadow shadow-mapSize={2048} />
+            <directionalLight position={[0, 100, 100]} intensity={2} castShadow shadow-mapSize={2048} />
         </>
     );
 }

@@ -6,7 +6,6 @@ import Player from './SmoothLocomotion';
 import SnapRotation from './SnapRotation';
 import { Physics, RigidBody } from '@react-three/rapier'
 import { Suspense, useEffect, useMemo } from 'react';
-import { useRef } from 'react';
 import { MoonSurface, Earth, Terminal } from './Objects';
 import { KeyboardControls, PointerLockControls } from '@react-three/drei';
 
@@ -44,7 +43,7 @@ function DefaultTerminal(props: any) {
         <>
             <group position={props.position || [0, 0, 0]}>
                 <Suspense fallback={null}>
-                    <Terminal videos={props.videos} receiveShadow castShadow/>
+                    <Terminal videos={props.videos} descriptions={props.descriptions} receiveShadow castShadow />
                 </Suspense>
             </group>
         </>
@@ -61,22 +60,43 @@ function WebScene() {
 
 function GameDevScene() {
     const videos = ['/gamedev1.mp4', '/gamedev2.mp4', '/gamedev3.mp4'];
+    const descriptions = [
+        "[UE5]Sci-fi FPS game in which you play as a survivor of a crashed spaceship...",
+        "[UE5]Fast-paced VR FPS game where one must survive rounds of enemies in a Colosseum style ring",
+        "[UE5]Labyrinth game which involves getting through obstacles and killing hordes of enemies"
+    ]
 
 
     return (
         <>
-            <DefaultTerminal
-                videos={videos}
-                position={[5, 0.2, -15]} />
-            <DefaultText text="Game Development" position={[5, -0.1, -14]} />
+            <group position={[5,0.2,-15]}>
+                <DefaultTerminal
+                    descriptions={descriptions}
+                    videos={videos}
+                    position={[0,0,0]} />
+                <DefaultText text="Game Development" position={[0, -0.2, 1]} />
+            </group>
         </>
     )
 }
 
 function DataWorkScene() {
+    const videos = ['/gamedev1.mp4', '/gamedev2.mp4', '/gamedev3.mp4'];
+    const descriptions = [
+        "",
+        "",
+        ""
+    ]
     return (
         <>
-
+            <group position={[6, 0.1, 20]} rotation-y={Math.PI} >
+                <DefaultTerminal
+                    videos={videos}
+                    position={[0,0,0]}
+                    descriptions={descriptions}
+                    />
+                <DefaultText text="Data  Work" position={[0, 0, -1]} />
+            </group>
         </>
     )
 }
@@ -106,8 +126,8 @@ function EnvSettings() {
         <>
             <drei.Stars radius={200} depth={100} count={1000} factor={5} />
             <drei.SoftShadows />
-            <ambientLight intensity={0.1} />
-            <directionalLight position={[0, 100, 100]} intensity={2} castShadow shadow-mapSize={2048} />
+            <ambientLight intensity={0.3} />
+            <directionalLight position={[0, 100, 100]} intensity={1} castShadow shadow-mapSize={2048} />
         </>
     );
 }
@@ -162,7 +182,7 @@ function App() {
                 <Canvas shadows >
                     <XR>
                         <Suspense fallback={<Loader />}>
-                            <Earth position={[500, 550, 0]} rotate={[1, 1, 1]} scale={[25, 25, 25]} />
+                            <Earth position={[500, 450, 0]} rotate={[1, 1, 1]} scale={[25, 25, 25]} />
                             <Physics gravity={[0, -1.62, 0]} >
                                 <XRSettings />
                                 <EnvSettings />

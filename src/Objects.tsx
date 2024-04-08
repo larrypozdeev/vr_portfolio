@@ -45,7 +45,7 @@ export function MoonSurface(props: any) {
             <group {...props} dispose={null}>
                 <group rotation={[-Math.PI / 2, 0, 0]} scale={70}>
 
-                    <RigidBody name='world' type='fixed' colliders="trimesh" position={[0, 0, 0]}>
+                    <RigidBody name='world' friction={0.9} type='fixed' colliders="trimesh" position={[0, 0, 0]}>
                         <mesh
                             castShadow
                             receiveShadow
@@ -130,9 +130,8 @@ export function Terminal(props: any) {
                     color="black"
                     fontSize={0.15}
                     maxWidth={2}
-                    lineHeight={0.5}
+                    lineHeight={0.9}
                     textAlign="center"
-                    castShadow
                     position={[0, 0.5, 1.05]}
                 >
                     {props.info}
@@ -351,7 +350,7 @@ export function Terminal(props: any) {
                 label="prev"
                 position={[-1.2, 1, 0]}
                 onClick={() => prevVideo()} />
-            <InfoScreen info={'hi'} />
+            <InfoScreen info={props.descriptions[currentVideo]} />
             <Button
                 label="next"
                 position={[1.2, 1, 0]}

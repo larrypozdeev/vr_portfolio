@@ -27,13 +27,22 @@ export default function Player({ position, hand = 'left' }: any) {
       const [, , ax, ay] = controller.inputSource.gamepad.axes;
       frontVector = new Vector3(0, 0, ay);
       sideVector = new Vector3(-ax, 0, 0);
-      direction.subVectors(frontVector, sideVector).normalize().multiplyScalar(speed).applyEuler(player.rotation);
+      direction
+        .subVectors(frontVector, sideVector)
+        .normalize()
+        .multiplyScalar(speed)
+        .applyEuler(player.rotation);
+
     } else {
       camera.position.set(refT?.x, refT?.y + 1.1, refT?.z);
       const { forward, back, left, right } = get() as any;
       frontVector = new Vector3(0, 0, back - forward);
       sideVector = new Vector3(left - right, 0, 0);
-      direction.subVectors(frontVector, sideVector).normalize().multiplyScalar(speed).applyEuler(camera.rotation);
+      direction
+        .subVectors(frontVector, sideVector)
+        .normalize()
+        .multiplyScalar(speed)
+        .applyEuler(camera.rotation);
     }
 
     if (direction[0] !== 0 && direction[1] !== 0 && direction[2] !== 0) {
@@ -44,7 +53,15 @@ export default function Player({ position, hand = 'left' }: any) {
   })
 
   return (
-    <RigidBody ref={ref} friction={0.8} name={'player'} mass={10} type="dynamic" position={position} enabledRotations={[false, false, false]} >
+    <RigidBody
+      ref={ref}
+      friction={0.8}
+      name={'player'}
+      mass={10}
+      type="dynamic"
+      position={position}
+      enabledRotations={[false, false, false]}
+    >
       <CapsuleCollider args={[0.75, 0.5]} />
     </RigidBody>
   )

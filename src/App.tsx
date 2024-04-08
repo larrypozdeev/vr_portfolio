@@ -2,13 +2,13 @@ import { Hands, VRButton, XR, Controllers } from '@react-three/xr'
 
 import { Canvas } from '@react-three/fiber'
 import * as drei from '@react-three/drei';
-import SmoothLocomotion from './SmoothLocomotion';
+import Player from './SmoothLocomotion';
 import SnapRotation from './SnapRotation';
-import { MeshCollider, Physics, RigidBody } from '@react-three/rapier'
-import { Suspense, useEffect, useState } from 'react';
-import React, { useRef } from 'react';
+import { Physics, RigidBody } from '@react-three/rapier'
+import { Suspense, useEffect, useMemo, useState } from 'react';
+import { useRef } from 'react';
 import { MoonSurface, Earth, Terminal } from './Objects';
-import { Button } from './Button';
+import { KeyboardControls, PointerLockControls } from '@react-three/drei';
 
 
 function DefaultText(props: any) {
@@ -43,7 +43,7 @@ function DefaultTerminal(props: any) {
         <>
             <group position={props.position || [0, 0, 0]}>
                 <Suspense fallback={null}>
-                    <Terminal videos={props.videos} />
+                    <Terminal videos={props.videos}/>
                 </Suspense>
             </group>
         </>
@@ -91,8 +91,8 @@ function MainScene() {
     const terrainRef = useRef(null); // ref to the terrain mesh
     return (
         <>
-            <MoonSurface name='terrain' ref={terrainRef} setPosition={setPosition} position={[0, 0, 0]} />
             <GameDevScene />
+            <MoonSurface name='terrain' ref={terrainRef} setPosition={setPosition} position={[0, 0, 0]} />
         </>
     )
 }
@@ -115,7 +115,7 @@ function XRSettings() {
                 <Hands />
                 <Controllers />
                 <SnapRotation />
-                <SmoothLocomotion />
+                <Player position={[0, 5, 2]} />
             </XR>
         </>
     )
@@ -140,20 +140,44 @@ function Loader() {
 }
 
 function App() {
+    type KeyboardControlsEntry<T extends string = string> = {
+        name: T
+        keys: string[]
+        up?: boolean
+    }
+    enum Controls {
+        forward = 'forward',
+        back = 'back',
+        left = 'left',
+        right = 'right',
+        jump = 'jump',
+    }
+
+    const map = useMemo<KeyboardControlsEntry<Controls>[]>(() => [
+        { name: Controls.forward, keys: ['ArrowUp', 'KeyW'] },
+        { name: Controls.back, keys: ['ArrowDown', 'KeyS'] },
+        { name: Controls.left, keys: ['ArrowLeft', 'KeyA'] },
+        { name: Controls.right, keys: ['ArrowRight', 'KeyD'] },
+    ], []) as any
+
     return (
         <>
             <VRButton />
-            <Canvas shadows>
-                <Suspense fallback={<Loader />}>
-                    <Earth position={[500, 550, 0]} rotate={[1, 1, 1]} scale={[25, 25, 25]} />
-                    <Physics gravity={[0, -1.62, 0]} >
-                        <EnvSettings />
-                        <MainScene />
-                        <XRSettings />
-                    </Physics>
-                    <drei.Preload all />
-                </Suspense>
-            </Canvas >
+
+            <KeyboardControls map={map}>
+                <Canvas shadows >
+                    <Suspense fallback={<Loader />}>
+                        <Earth position={[500, 550, 0]} rotate={[1, 1, 1]} scale={[25, 25, 25]} />
+                        <Physics gravity={[0, -1.62, 0]} >
+                            <EnvSettings />
+                            <MainScene />
+                            <XRSettings />
+                        </Physics>
+                        <drei.Preload all />
+                    </Suspense>
+                    <PointerLockControls />
+                </Canvas >
+            </KeyboardControls>
         </>
     )
 

@@ -51,9 +51,19 @@ function DefaultTerminal(props: any) {
 }
 
 function WebScene() {
+    const videos = ['/web1.mp4'];
+    const descriptions = [
+        "(work in progress)"
+    ];
     return (
         <>
-
+            <group position={[-15, 0, 6]} rotation-y={Math.PI/2}>
+                <DefaultTerminal
+                    descriptions={descriptions}
+                    videos={videos}
+                    position={[0, 0, 0]} />
+                <DefaultText text="Web Dev" position={[0, -0.2, 1]} />
+            </group>
         </>
     )
 }
@@ -66,51 +76,57 @@ function GameDevScene() {
         "[UE5]Labyrinth game which involves getting through obstacles and killing hordes of enemies"
     ]
 
-
     return (
         <>
-            <group position={[5,0.2,-15]}>
+            <group position={[5, 0.2, -15]}>
                 <DefaultTerminal
                     descriptions={descriptions}
                     videos={videos}
-                    position={[0,0,0]} />
-                <DefaultText text="Game Development" position={[0, -0.2, 1]} />
+                    position={[0, 0, 0]} />
+                <DefaultText text="Game Dev" position={[0, -0.2, 1]} />
             </group>
         </>
     )
 }
 
 function DataWorkScene() {
-    const videos = ['/gamedev1.mp4', '/gamedev2.mp4', '/gamedev3.mp4'];
+    const videos = ['/data1.mp4'];
     const descriptions = [
-        "",
-        "",
-        ""
+        "[JS]Calculates number of pipes of different diameters per container based on the given length. Includes calculation of pipes that fit inside each other",
     ]
     return (
         <>
             <group position={[6, 0.1, 20]} rotation-y={Math.PI} >
                 <DefaultTerminal
                     videos={videos}
-                    position={[0,0,0]}
+                    position={[0, 0, 0]}
                     descriptions={descriptions}
-                    />
-                <DefaultText text="Data  Work" position={[0, 0, -1]} />
+                />
+                <DefaultText text="Data  Work" position={[0, 0, 1]} />
             </group>
         </>
     )
 }
 function LowLevelLanguageScene() {
+    const videos = ['/default.mp4'];
+    const descriptions = ["[C++, group project] PPM image editor. Implements image filters(blur, sharpening, emboss, edge detection), scaling, rotation, translation and grayscale"]
+
     return (
         <>
+            <group position={[22, 0, 6]} rotation-y={-Math.PI / 2} >
+                <DefaultTerminal
+                    videos={videos}
+                    position={[0, 0, 0]}
+                    descriptions={descriptions}
+                />
+                <DefaultText text="Low Level" position={[0, 0, 1]} />
+            </group>
 
         </>
     )
 }
 
 function MainScene() {
-    // moon surface is the terrain mesh
-
     return (
         <>
             <GameDevScene />
@@ -147,6 +163,9 @@ function Loader() {
         drei.useGLTF.preload('/gamedev1.mp4');
         drei.useGLTF.preload('/gamedev2.mp4');
         drei.useGLTF.preload('/gamedev3.mp4');
+        drei.useGLTF.preload('/data1.mp4');
+        drei.useGLTF.preload('/web1.mp4');
+        drei.useGLTF.preload('/default.mp4');
     }, []);
 
     return (
